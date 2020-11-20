@@ -55,7 +55,6 @@
 
 <script>
 import { mapState } from "vuex";
-import moment from "moment";
 import * as fb from "../firebase";
 
 export default {
@@ -63,17 +62,17 @@ export default {
   data() {
     return {
       users: [],
+      tours: []
     };
   },
   mounted: function () {
     this.fetchUsers();
+    this.fetchTours();
     console.info("mounted, users:", this.users);
+    console.info("mounted, tours:", this.tours);
   },
   computed: {
-    ...mapState(["userProfile", "users"]),
-    items: function () {
-      return this.users;
-    },
+    ...mapState(["userProfile", "users", "tours"]),
   },
   methods: {
     async fetchUsers() {
@@ -91,16 +90,37 @@ export default {
         throw new Error("Something went wrong.");
       }
     },
+    async fetchTours() {
+      try {
+        const { docs } = await fb.toursCollection.get();
 
-    async updateAdmin(user) {
-      const userRef = await fb.usersCollection.doc(user.id).update({
-        admin: !user.admin,
-      });
-      setTimeout(() => {}, 2000);
-      window.location.reload();
+        this.tours = docs.map((doc) => {
+          const { id } = doc;
+          const data = doc.data();
+          return { id, ...data };
+        });
+
+        console.log("Loaded tours", this.tours);
+      } catch (error) {
+        throw new Error("Something went wrong.");
+      }
     },
-  },
-};
+
+    updateProfile(user) {
+      console.log(user.name);
+      this.$store.dispatch('updateProfile', {
+        admin: !user.admin
+      })
+
+      console.log("hey");
+      this.showSuccess = true
+
+      setTimeout(() => {
+        this.showSuccess = false
+      }, 2000)
+    },
+},
+}
 </script>
 
 <style lang="scss" scoped>
