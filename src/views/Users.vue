@@ -1,55 +1,62 @@
 <template>
   <section id="users" v-if="userProfile.admin">
-	
-	<div class="limiter">
-		<div class="container-table100">
-			<div class="wrap-table100">
-					<div class="table">
+    <div class="limiter">
+      <div class="container-table100">
+        <div class="wrap-table100">
+          <div class="table">
+            <div class="row header">
+              <div class="cell">Name</div>
+              <div class="cell">Company</div>
+              <div class="cell">Admin</div>
+              <div class="cell">Tours</div>
+              <div class="cell"></div>
+            </div>
 
-						<div class="row header">
-							<div class="cell">
-								Name
-							</div>
-							<div class="cell">
-								Company
-							</div>
-							<div class="cell">
-								Admin
-							</div>
+            <div v-for="user in users" :key="user.id" class="row">
               <div class="cell">
-								Tours
-							</div>
+                {{ user.name }}
+              </div>
               <div class="cell">
-								
-							</div>
-						</div>
-
-						<div v-for="user in users" :key="user.id" class="row">
-							<div class="cell">
-								{{user.name}}
-							</div>
-							<div class="cell">
-								{{user.company}}
-							</div>
-							<div class="cell">
-								<label class="switch">
-                  <input v-if="user.admin" type="checkbox" checked="true" @click="updateAdmin(user)">
-                  <input v-else type="checkbox" @click="updateAdmin(user)">
+                {{ user.company }}
+              </div>
+              <div class="cell">
+                <label class="switch">
+                  <input
+                    v-if="user.admin"
+                    type="checkbox"
+                    checked="true"
+                    v-on:click="updateAdmin(user)"
+                  />
+                  <input
+                    v-else
+                    type="checkbox"
+                    v-on:click="updateAdmin(user)"
+                  />
                   <span class="slider round"></span>
                 </label>
+              </div>
+              <div class="cell">
+                <div
+                  v-for="tour in user['tours']"
+                  :key="tour"
+                  class="tour-list"
+                >
+                  <ul>
+                    <li>{{ tour }}</li>
+                  </ul>
                 </div>
+              </div>
               <div class="cell">
-                
-							</div> 
-              <div class="cell">
-                <input type="image" src="gear.png" width="20" height="20" >
-							</div>
-						</div>
-            
-					</div>
-			</div>
-		</div>
-	</div>
+                <input v-on:click="showModal = true" type="image" src="gear.png" width="20" height="20" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit window -->
+    
   </section>
 </template>
 
@@ -58,21 +65,24 @@ import { mapState } from "vuex";
 import * as fb from "../firebase";
 
 export default {
-  components: {},
+  components: {
+    
+  },
   data() {
     return {
       users: [],
-      tours: []
+      tours: [],
+      showModal: true
     };
   },
   mounted: function () {
     this.fetchUsers();
-    this.fetchTours();
     console.info("mounted, users:", this.users);
+    this.fetchTours();
     console.info("mounted, tours:", this.tours);
   },
   computed: {
-    ...mapState(["userProfile", "users", "tours"]),
+    ...mapState(["userProfile"]),
   },
   methods: {
     async fetchUsers() {
@@ -90,6 +100,7 @@ export default {
         throw new Error("Something went wrong.");
       }
     },
+   
     async fetchTours() {
       try {
         const { docs } = await fb.toursCollection.get();
@@ -106,21 +117,16 @@ export default {
       }
     },
 
-    updateProfile(user) {
-      console.log(user.name);
-      this.$store.dispatch('updateProfile', {
-        admin: !user.admin
-      })
-
-      console.log("hey");
-      this.showSuccess = true
-
-      setTimeout(() => {
-        this.showSuccess = false
-      }, 2000)
+    async updateAdmin(user) {
+      try {
+        fb.usersCollection.doc(user.id).update({ admin: !user.admin });
+      } catch (error) {
+        throw new Error("Something went wrong.");
+      }
     },
-},
-}
+  },
+};
+
 </script>
 
 <style lang="scss" scoped>

@@ -309,7 +309,13 @@ header {
   
   .cell {
     display: table-cell;
+    
   }
+
+  .tour-list {
+    overflow: hidden;
+  }
+
   
   @media screen and (max-width: 768px) {
     .cell {
@@ -558,4 +564,4 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-
+/* Edit users tours modal */

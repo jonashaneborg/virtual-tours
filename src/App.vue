@@ -10,6 +10,7 @@ import { mapState } from 'vuex'
 import SiteNav from '@/components/SiteNav'
 
 export default {
+  
   components: {
     SiteNav
   },
