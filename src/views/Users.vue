@@ -144,6 +144,7 @@ export default {
         this.users = docs.map((doc) => {
           const { id } = doc;
           const data = doc.data();
+          data['tours'].sort();
           return { id, ...data };
         });
 
