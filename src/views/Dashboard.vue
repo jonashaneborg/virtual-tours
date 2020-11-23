@@ -1,50 +1,88 @@
 <template>
-<section id="dashboard">
-  <div id="Dashboard">
-    <div class="col1">
-    
-    <h1 v-if="userProfile.admin">All tours</h1>
-    <h1 v-else>My tours</h1>
+  <section id="dashboard">
+    <div v-if="userProfile.admin" class="col1">
+      <h1>All tours</h1>
+      <div class="limiter">
+        <div class="container-table100">
+          <div class="wrap-table100">
+            <div class="table">
+              <div class="row header">
+                <div class="cell">Name</div>
+              </div>
+
+              <div v-for="tour in tours" :key="tour.id" class="row">
+                <div class="cell">
+                  {{ tour.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-  </div>
-</section>
+
+    <div v-else>
+      <h1>My tours</h1>
+      <div class="limiter">
+        <div class="container-table100">
+          <div class="wrap-table100">
+            <div class="table">
+              <div class="row header">
+                <div class="cell">Name</div>
+              </div>
+
+              <div v-for="tour in userProfile['tours']" :key="tour" class="row">
+                <div class="cell">
+                  {{ tour }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import moment from 'moment'
+import { mapState } from "vuex";
+import * as fb from "../firebase";
 
 export default {
-  components: {
-  
+  components: {},
+
+  mounted: function () {
+    this.fetchTours();
   },
   data() {
     return {
-
-    }
+      tours: [],
+    };
   },
   computed: {
-    ...mapState(['userProfile'])
+    ...mapState(["userProfile"]),
   },
   methods: {
-    
-  },
-  filters: {
-    formatDate(val) {
-      if (!val) { return '-' }
+    async fetchTours() {
+      try {
+        const { docs } = await fb.toursCollection.get();
+        console.log(this.userProfile.admin);
 
-      let date = val.toDate()
-      return moment(date).fromNow()
+        this.tours = docs.map((doc) => {
+          const { id } = doc;
+          const data = doc.data();
+          console.log(data);
+          return { id, ...data };
+        });
+
+        console.log("Loaded tours", this.tours);
+      } catch (error) {
+        throw new Error("Something went wrong.");
+      }
     },
-    trimLength(val) {
-      if (val.length < 200) { return val }
-      return `${val.substring(0, 200)}...`
-    }
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>

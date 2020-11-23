@@ -47,7 +47,13 @@
                 </div>
               </div>
               <div class="cell">
-                <input v-on:click="showModal = true" type="image" src="gear.png" width="20" height="20" />
+                <input
+                  v-on:click="openModal(user)"
+                  type="image"
+                  src="gear.png"
+                  width="20"
+                  height="20"
+                />
               </div>
             </div>
           </div>
@@ -55,24 +61,70 @@
       </div>
     </div>
 
-    <!-- Edit window -->
-    
+    <!-- Edit tours overlay -->
+    <div
+      v-if="modalVisible"
+      class="edit-tours"
+      @click.self="modalVisible = false"
+    >
+      <div class="edit-content" id="edit-tours">
+        <div class="limiter">
+          <div class="container-table100">
+            <div class="wrap-table100">
+              <div class="table">
+                <div class="row header">
+                  <div class="cell">{{ currUser.name }}'s tours</div>
+                  <div class="cell">Access</div>
+                </div>
+
+                <div
+                  v-for="[name, access] in currTours"
+                  :key="name"
+                  class="row"
+                >
+                  <div class="cell">
+                    {{ name }}
+                  </div>
+                  <div class="cell">
+                    <label class="switch">
+                      <input
+                        v-if="access"
+                        type="checkbox"
+                        checked="true"
+                        v-on:click="updateTour(currUser, [name, access])"
+                      />
+                      <input
+                        v-else
+                        type="checkbox"
+                        v-on:click="updateTour(currUser, [name, access])"
+                      />
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import * as fb from "../firebase";
+import * as firebase from "firebase/app";
 
 export default {
-  components: {
-    
-  },
+  components: {},
   data() {
     return {
       users: [],
       tours: [],
-      showModal: true
+      modalVisible: false,
+      currTours: [],
+      currUser: null,
     };
   },
   mounted: function () {
@@ -100,7 +152,7 @@ export default {
         throw new Error("Something went wrong.");
       }
     },
-   
+
     async fetchTours() {
       try {
         const { docs } = await fb.toursCollection.get();
@@ -124,9 +176,46 @@ export default {
         throw new Error("Something went wrong.");
       }
     },
+
+    async updateTour(user, tour) {
+      try {
+        let [name, access] = tour;
+        // Delete tour
+        if (access) {
+          fb.usersCollection
+            .doc(user.id)
+            .update({ tours: firebase.firestore.FieldValue.arrayRemove(name) });
+        }
+        // Add tour
+        else {
+          fb.usersCollection
+            .doc(user.id)
+            .update({ tours: firebase.firestore.FieldValue.arrayUnion(name) });
+        }
+      } catch (error) {
+        throw new Error("Something went wrong: \n" + error);
+      }
+    },
+
+    openModal(user) {
+      var all_tours = [];
+      var user_tours = user.tours;
+
+      this.tours.forEach(function (tour) {
+        if (user_tours.includes(tour.name)) {
+          all_tours.push([tour.name, true]);
+        } else {
+          all_tours.push([tour.name, false]);
+        }
+      });
+
+      all_tours.sort();
+      this.currTours = all_tours;
+      this.currUser = user;
+      this.modalVisible = true;
+    },
   },
 };
-
 </script>
 
 <style lang="scss" scoped>

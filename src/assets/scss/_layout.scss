@@ -165,18 +165,59 @@ header {
 }
 
 
-#users {
+#users, #dashboard {
   * {
     margin: 0px; 
     padding: 0px; 
     box-sizing: border-box;
+  }
+
+  h1 {
+    text-align: center;
+    padding-top: 20px;
   }
   
   body, html {
     height: 100%;
     font-family: sans-serif;
   }
+
+  .edit-tours {
+    position: fixed; 
+    width: 100%; 
+    height: 100%; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(42, 68, 90, 0.7); 
+    z-index: 2; 
+    cursor: pointer;
+  }
   
+  .edit-content {
+    position: absolute;
+    padding-top: 0px;
+    top: 50%;
+    left: 50%;
+    color: white;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+  }
+
+  .checkboxes {
+    font-size: 30px;
+  }
+
+  .checkboxes label {
+    float: left;
+  }
+  .checkboxes ul {
+    margin: 0;
+    list-style: none;
+    float: left;
+  }
+
   a {
     margin: 0px;
     transition: all 0.4s;
@@ -407,72 +448,6 @@ header {
   
     .table, .row, .cell {
       width: 100% !important;
-    }
-  }
-}
-
-#dashboard {
-  section {
-    padding: 2rem 0;
-  }
-
-  .col1 {
-    flex: 0 0 30%;
-
-    @media screen and (max-width: 1000px) {
-      flex: 0 0 40%;
-    }
-  }
-
-  h5 {
-    color: cadetblue;
-  }
-
-  .profile {
-    background: $white;
-    padding: 2rem;
-
-    p {
-      color: $medium;
-      margin-bottom: 1rem;
-    }
-  }
-
-  .no-results {
-    border: 1px solid #e6ecf0;
-    background: $white;
-    text-align: center;
-    padding: 100px 1rem;
-  }
-
-  .c-modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba($dark, 0.4);
-    z-index: 999;
-
-    .c-container {
-      position: relative;
-      max-width: 600px;
-      margin: 30vh auto 0;
-      padding: 2rem;
-      border-radius: 3px;
-      background: $white;
-      box-shadow: 0 0 20px 0 rgba($dark, 0.5);
-
-      a {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        padding: 5px;
-      }
-
-      .button {
-        margin-top: 1rem;
-      }
     }
   }
 }

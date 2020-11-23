@@ -38,7 +38,7 @@ const routes = [
   {
     path: '/webgl',
     name: 'webgl',
-    component: () => import( /* webpackChunkName: "webgl" */ '../views/Webgl.vue'),
+    component: () => import( /* webpackChunkName: "create" */ '../views/Create.vue'),
     meta: {
       requiresAuth: true
     }

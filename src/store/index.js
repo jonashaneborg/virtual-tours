@@ -65,7 +65,7 @@ const store = new Vuex.Store({
     async updateProfile({ dispatch }, user) {
       const userId = fb.auth.currentUser.uid
       // update user object
-      const userRef = await fb.usersCollection.doc(userId).update({
+      await fb.usersCollection.doc(userId).update({
         name: user.name,
         company: user.company
       })

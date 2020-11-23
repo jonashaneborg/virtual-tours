@@ -7,6 +7,9 @@
         </router-link>
         <ul class="inline">
           <li>
+            <router-link v-if="userProfile.admin" to="/create">Create</router-link>
+          </li>
+          <li>
             <router-link v-if="userProfile.admin" to="/users">Users</router-link>
           </li>
           <li>
@@ -23,7 +26,6 @@
 </template>
 
 <script>
-import { users } from '@/firebase'
 import { mapState } from 'vuex'
 export default {
   computed: {

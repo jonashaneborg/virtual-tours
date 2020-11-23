@@ -1,5 +1,5 @@
 <template>
-  <section id="webgl">
+  <section v-if="userProfile.admin" id="webgl">
      <!-- <unity
       src="Build/AngryJarleWebGL.json"
       width="1000"
