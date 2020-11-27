@@ -144,7 +144,7 @@ export default {
         this.users = docs.map((doc) => {
           const { id } = doc;
           const data = doc.data();
-          data['tours'].sort();
+          data["tours"].sort();
           return { id, ...data };
         });
 
@@ -155,19 +155,23 @@ export default {
     },
 
     async fetchTours() {
-      try {
-        const { docs } = await fb.toursCollection.get();
+      let storageRef = fb.storage.ref();
+      let listRef = storageRef.child("Tours");
+      let temp_tours = [];
 
-        this.tours = docs.map((doc) => {
-          const { id } = doc;
-          const data = doc.data();
-          return { id, ...data };
+      listRef
+        .listAll()
+        .then(function (res) {
+          res.prefixes.forEach(function (folderRef) {
+            let name = folderRef.name;
+            temp_tours.push(name);
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
         });
 
-        console.log("Loaded tours", this.tours);
-      } catch (error) {
-        throw new Error("Something went wrong.");
-      }
+        this.tours = temp_tours;
     },
 
     async updateAdmin(user) {
@@ -203,10 +207,10 @@ export default {
       var user_tours = user.tours;
 
       this.tours.forEach(function (tour) {
-        if (user_tours.includes(tour.name)) {
-          all_tours.push([tour.name, true]);
+        if (user_tours.includes(tour)) {
+          all_tours.push([tour, true]);
         } else {
-          all_tours.push([tour.name, false]);
+          all_tours.push([tour, false]);
         }
       });
 

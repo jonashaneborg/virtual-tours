@@ -65,7 +65,7 @@ export default {
         company: '',
         email: '',
         password: '',
-        admin: false
+        admin: false,
       },
       showLoginForm: true,
       showPasswordReset: false
