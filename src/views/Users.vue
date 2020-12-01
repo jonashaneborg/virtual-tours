@@ -164,14 +164,22 @@ export default {
         .then(function (res) {
           res.prefixes.forEach(function (folderRef) {
             let name = folderRef.name;
-            temp_tours.push(name);
+
+            // Check if folder is empty
+            folderRef.listAll().then(function (ref) {
+                console.log(ref.items.length);
+                if (ref.items.length != 0) {
+                  temp_tours.push(name);
+                }
+            });
+            
           });
         })
         .catch(function (error) {
           console.log(error);
         });
 
-        this.tours = temp_tours;
+      this.tours = temp_tours;
     },
 
     async updateAdmin(user) {
