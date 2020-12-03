@@ -180,7 +180,6 @@ export default {
 
             // Check if folder is empty
             folderRef.listAll().then(function (ref) {
-              console.log(ref.items.length);
               if (ref.items.length != 0) {
                 temp_tours.push(name);
               }
