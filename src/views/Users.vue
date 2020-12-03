@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <!-- Edit tours overlay -->
+    <!-- Assignment of tours overlay -->
     <div
       v-if="modalVisible"
       class="edit-tours"
@@ -74,9 +74,19 @@
               <div class="table">
                 <div class="row header">
                   <div class="cell">{{ currUser.name }}'s tours</div>
+                  <div class="cell"></div>
+                  <div class="cell"></div>
                   <div class="cell">Access</div>
+                  <div class="cell">
+                    <input
+                      v-on:click="deleteUser(currUser)"
+                      type="image"
+                      src="trash.png"
+                      width="20"
+                      height="20"
+                    />
+                  </div>
                 </div>
-
                 <div
                   v-for="[name, access] in currTours"
                   :key="name"
@@ -85,6 +95,8 @@
                   <div class="cell">
                     {{ name }}
                   </div>
+                  <div class="cell"></div>
+                  <div class="cell"></div>
                   <div class="cell">
                     <label class="switch">
                       <input
@@ -101,6 +113,7 @@
                       <span class="slider round"></span>
                     </label>
                   </div>
+                  <div class="cell"></div>
                 </div>
               </div>
             </div>
@@ -167,12 +180,11 @@ export default {
 
             // Check if folder is empty
             folderRef.listAll().then(function (ref) {
-                console.log(ref.items.length);
-                if (ref.items.length != 0) {
-                  temp_tours.push(name);
-                }
+              console.log(ref.items.length);
+              if (ref.items.length != 0) {
+                temp_tours.push(name);
+              }
             });
-            
           });
         })
         .catch(function (error) {
@@ -226,6 +238,20 @@ export default {
       this.currTours = all_tours;
       this.currUser = user;
       this.modalVisible = true;
+    },
+
+    delete(user) {
+      fb.usersCollection
+        .doc(user.id)
+        .delete()
+        .then(function () {
+          // Deleting authentication user-object 
+          // besides currUser is not permitted
+        
+        })
+        .catch(function (error) {
+          console.error("Error deleting user: ", error);
+        });
     },
   },
 };

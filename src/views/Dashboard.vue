@@ -111,6 +111,7 @@ export default {
 
       this.tours = temp_tours;
     },
+
     async fetchUsers() {
       try {
         const { docs } = await fb.usersCollection.get();
@@ -127,6 +128,7 @@ export default {
         throw new Error("Something went wrong.");
       }
     },
+
     async deleteTour(tour) {
       // Delete all items in folder
       let storageRef = fb.storage.ref();
