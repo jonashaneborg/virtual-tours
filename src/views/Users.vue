@@ -240,7 +240,8 @@ export default {
       this.modalVisible = true;
     },
 
-    delete(user) {
+    deleteUser(user) {
+      // Delete user in users-collection
       fb.usersCollection
         .doc(user.id)
         .delete()
